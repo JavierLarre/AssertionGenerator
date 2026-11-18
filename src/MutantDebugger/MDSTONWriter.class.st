@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'blacklist',
 		'variables',
-		'target'
+		'target',
+		'maxLevel'
 	],
 	#category : 'MutantDebugger-STON',
 	#package : 'MutantDebugger',
@@ -23,12 +24,21 @@ MDSTONWriter >> hasBlacklistedVariable [
 	^ self instanceVariableNames includesAny: blacklist
 ]
 
+{ #category : 'private' }
+MDSTONWriter >> indentedDo: block [
+
+	level := level + 1.
+	level < maxLevel ifTrue: [ block value ].
+	level := level - 1
+]
+
 { #category : 'initialization' }
 MDSTONWriter >> initialize [
 
 	super initialize.
 	blacklist := Set newFrom: #( expectedFails ).
-	variables := Dictionary new
+	variables := Dictionary new.
+	maxLevel := 3
 ]
 
 { #category : 'as yet unclassified' }
@@ -43,15 +53,37 @@ MDSTONWriter >> instanceVariableNamesInBlacklist [
 	^ self instanceVariableNames intersection: blacklist
 ]
 
-{ #category : 'as yet unclassified' }
-MDSTONWriter >> nullifyVariable: anObject [
+{ #category : 'writing' }
+MDSTONWriter >> isSerializable: anObject [
 
-	| instanceVariableNames |
-	instanceVariableNames := self instanceVariableNames intersection: blacklist.
-	variables removeAll.
-	instanceVariableNames do: [ :instVarName |
-			variables at: instVarName put: (target instVarNamed: instVarName).
-			target instVarNamed: instVarName put: nil ]
+	anObject class isVariable ifFalse: [ ^ true ].
+	[ MDSTON toString: anObject ]
+		on: STONWriterError
+		do: [ ^ false ].
+	^ true
+]
+
+{ #category : 'accessing' }
+MDSTONWriter >> maxLevel: aNumber [
+
+	maxLevel := aNumber
+]
+
+{ #category : 'as yet unclassified' }
+MDSTONWriter >> nullifyInstVar: instVarNamed [
+
+	variables at: instVarNamed put: (target instVarNamed: instVarNamed ).
+	target instVarNamed: instVarNamed put: nil
+]
+
+{ #category : 'writing' }
+MDSTONWriter >> nullifyUnserializableObjects [
+
+	| object |
+	target class stonAllInstVarNames do: [ :instVarName |
+			object := target instVarNamed: instVarName.
+			(self isSerializable: object) ifFalse: [
+					self nullifyInstVar: instVarName ] ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -59,8 +91,7 @@ MDSTONWriter >> nullifyVariables [
 
 	variables removeAll.
 	self instanceVariableNamesInBlacklist do: [ :instVarName |
-			variables at: instVarName put: (target instVarNamed: instVarName).
-			target instVarNamed: instVarName put: nil ]
+			self nullifyInstVar: instVarName ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -79,7 +110,8 @@ MDSTONWriter >> restoreVariables [
 MDSTONWriter >> writeObject: anObject [
 
 	target := anObject.
-	self hasBlacklistedVariable ifTrue: [ self nullifyVariables ].
+	self nullifyVariables.
+	self nullifyUnserializableObjects.
 	super writeObject: anObject.
-	self hasBlacklistedVariable ifTrue: [ self restoreVariables ]
+	self restoreVariables
 ]
