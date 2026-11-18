@@ -48,7 +48,7 @@ MDSnapshotDifferenceTest >> testGenerateAssert [
 
 	account deposit: 100.
 	self assert: account balance equals: 100.
-	self assert: ((self instVarNamed: #account) instVarNamed: #owner) equals: '''''
+	self assert: (account instVarNamed: #owner) equals: '''''
 ]
 
 { #category : 'tests' }
@@ -82,6 +82,6 @@ MDSnapshotDifferenceTest >> testGenerateMultipleAsserts [
 		equals: 'testWithdrawTooMuchSuggestedFromMTAssignmentNullifierOperator
 
 	self should: [ account withdraw: 1 ] raise: Error.
-	self assert: ((self instVarNamed: #account) instVarNamed: #funds) equals: 0.
-	self assert: ((self instVarNamed: #account) instVarNamed: #owner) equals: '''''
+	self assert: (account instVarNamed: #funds) equals: 0.
+	self assert: (account instVarNamed: #owner) equals: '''''
 ]
