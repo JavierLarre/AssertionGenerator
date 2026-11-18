@@ -2,9 +2,9 @@ Class {
 	#name : 'MutantDebugger',
 	#superclass : 'Object',
 	#instVars : [
-		'classesToMutate',
-		'testClasses',
-		'snapshots'
+		'snapshots',
+		'analysis',
+		'inyector'
 	],
 	#category : 'MutantDebugger-Facade',
 	#package : 'MutantDebugger',
@@ -12,23 +12,27 @@ Class {
 }
 
 { #category : 'accessing' }
-MutantDebugger >> classesToMutate [
+MutantDebugger >> analysis [
 
-	^ classesToMutate
+	^ analysis
+]
+
+{ #category : 'accessing' }
+MutantDebugger >> analysis: anObject [
+
+	analysis := anObject
 ]
 
 { #category : 'accessing' }
 MutantDebugger >> classesToMutate: anObject [
 
-	classesToMutate := anObject
+	analysis classesToMutate: anObject
 ]
 
 { #category : 'as yet unclassified' }
 MutantDebugger >> generateAsserts [
 
-	| differences |
-	differences := self run.
-	differences do: #generateAssert
+	self mutationDifferences do: #generateAssert
 ]
 
 { #category : 'initialization' }
@@ -37,46 +41,60 @@ MutantDebugger >> initialize [
 	super initialize.
 	snapshots := MDSnapshots uniqueInstance
 		             reset;
-		             yourself
+		             yourself.
+	analysis := self newMTAnalysis.
+	inyector := MDSnapshotInyector new
+]
+
+{ #category : 'accessing' }
+MutantDebugger >> inyector [
+
+	^ inyector
+]
+
+{ #category : 'as yet unclassified' }
+MutantDebugger >> mutationDifferences [ 
+
+	^ snapshots differences 
+]
+
+{ #category : 'as yet unclassified' }
+MutantDebugger >> newMTAnalysis [
+
+	^ MTAnalysis new
+		  mutantGenerationStrategy: MTAllMutantGenerationStrategy new;
+		  evaluationClass: MDMutantEvaluation;
+		  yourself
 ]
 
 { #category : 'running' }
 MutantDebugger >> run [
 
-	| analysis inyector |
-	analysis := MTAnalysis new
-						mutantGenerationStrategy: MTAllMutantGenerationStrategy new;
-		            evaluationClass: MDMutantEvaluation;
-		            classesToMutate: classesToMutate;
-		            testClasses: testClasses;
-		            yourself.
-	inyector := MDSnapshotInyector fromTestClasses: testClasses.
 	snapshots stopCollectingMutations.
-
 	^ [
-		  inyector
-			  inyectCodeIntoTestCases;
-			  runInstrumentedTestCases.
-		  analysis run.
-		  snapshots differences ] ensure: [ inyector restoreTestCases ]
-]
-
-{ #category : 'as yet unclassified' }
-MutantDebugger >> suggestedAsserts [
-
-	| differences |
-	differences := self run.
-	^ differences collect: #differentVariables
+		  inyector inyectCodeIntoTestCases.
+		  inyector runInstrumentedTestCases.
+		  analysis run ] ensure: [ inyector restoreTestCases ]
 ]
 
 { #category : 'accessing' }
-MutantDebugger >> testClasses [
+MutantDebugger >> snapshots [
 
-	^ testClasses
+	^ snapshots
+]
+
+{ #category : 'as yet unclassified' }
+MutantDebugger >> startNewAnalysis [
+
+	analysis := self newMTAnalysis
+		  testCases: analysis testCases;
+		  methodsToMutate: analysis methodsToMutate;
+		  yourself
 ]
 
 { #category : 'accessing' }
 MutantDebugger >> testClasses: anObject [
 
-	testClasses := anObject
+	analysis testClasses: anObject.
+	inyector := MDSnapshotInyector fromTestClasses: anObject 
 ]
