@@ -36,7 +36,7 @@ MDSTONWriter >> indentedDo: block [
 MDSTONWriter >> initialize [
 
 	super initialize.
-	blacklist := Set newFrom: #( expectedFails ).
+	blacklist := Set with: #expectedFails.
 	variables := Dictionary new.
 	maxLevel := 3
 ]

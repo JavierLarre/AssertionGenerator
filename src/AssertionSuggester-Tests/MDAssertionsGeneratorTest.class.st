@@ -16,7 +16,7 @@ Class {
 MDAssertionsGeneratorTest >> setUp [
 	super setUp.
 
-	generator := MDAssertionsGenerator new
+	generator := ASAssertionsGenerator new
 ]
 
 { #category : 'tests' }

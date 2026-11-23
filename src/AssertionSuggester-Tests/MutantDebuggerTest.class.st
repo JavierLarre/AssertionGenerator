@@ -16,21 +16,8 @@ Class {
 { #category : 'tests' }
 MutantDebuggerTest >> evaluateCase: aClass withTest: aTestClass [
 
-	| firstMutationResult generalResult |
-	testClass := aTestClass .
-	mutantDebugger
-		classesToMutate: { aClass };
-		testClasses: { testClasses };
-		run.
-	firstMutationResult := mutantDebugger analysis generalResult.
-	mutantDebugger generateAsserts.
-	generalResult := mutantDebugger newMTAnalysis
-		                 classesToMutate: { aClass };
-		                 testClasses: { testClass };
-		                 mutations: mutantDebugger analysis mutations;
-		                 run;
-		                 generalResult.
-	self assert: firstMutationResult mutationScore < generalResult mutationScore
+	testClass := aTestClass.
+	mutantDebugger findFor: aTestClass mutating: aClass 
 ]
 
 { #category : 'running' }

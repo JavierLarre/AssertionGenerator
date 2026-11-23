@@ -4,7 +4,9 @@ Class {
 	#instVars : [
 		'snapshots',
 		'analysis',
-		'inyector'
+		'inyector',
+		'classToMutate',
+		'testClass'
 	],
 	#category : 'AssertionSuggester-Facade',
 	#package : 'AssertionSuggester',
@@ -24,9 +26,29 @@ AssertionSuggester >> analysis: anObject [
 ]
 
 { #category : 'accessing' }
-AssertionSuggester >> classesToMutate: anObject [
+AssertionSuggester >> classToMutate: anObject [
 
-	analysis classesToMutate: anObject
+	classToMutate := anObject.
+	analysis classesToMutate: { classToMutate }
+]
+
+{ #category : 'accessing' }
+AssertionSuggester >> findFor: aTestClass mutating: aClass [
+
+	| firstMutationResult generalResult |
+	self
+		  testClass: aTestClass;
+		  classToMutate: aClass;
+		  run.
+	firstMutationResult := analysis generalResult.
+	self 
+		generateAsserts;
+		startNewAnalysis;
+		run.
+	generalResult := analysis generalResult.
+	
+	self assert: firstMutationResult mutationScore < generalResult mutationScore
+	 
 ]
 
 { #category : 'as yet unclassified' }
@@ -61,9 +83,8 @@ AssertionSuggester >> mutationDifferences [
 { #category : 'as yet unclassified' }
 AssertionSuggester >> newMTAnalysis [
 
-	^ MTAnalysis new
+	^ ASMuTalkAnalysis new
 		  mutantGenerationStrategy: MTAllMutantGenerationStrategy new;
-		  evaluationClass: MDMutantEvaluation;
 		  yourself
 ]
 
@@ -73,7 +94,6 @@ AssertionSuggester >> run [
 	snapshots stopCollectingMutations.
 	^ [
 		  inyector inyectCodeIntoTestCases.
-		  inyector runInstrumentedTestCases.
 		  analysis run ] ensure: [ inyector restoreTestCases ]
 ]
 
@@ -86,15 +106,17 @@ AssertionSuggester >> snapshots [
 { #category : 'as yet unclassified' }
 AssertionSuggester >> startNewAnalysis [
 
-	analysis := self newMTAnalysis
-		  testCases: analysis testCases;
-		  methodsToMutate: analysis methodsToMutate;
-		  yourself
+	analysis := self newMTAnalysis 
+		            classesToMutate: { classToMutate };
+		            testClasses: { testClass };
+		            mutations: analysis mutations;
+		            yourself
 ]
 
 { #category : 'accessing' }
-AssertionSuggester >> testClasses: anObject [
+AssertionSuggester >> testClass: anObject [
 
-	analysis testClasses: anObject.
-	inyector := MDSnapshotInyector fromTestClasses: anObject 
+	testClass := anObject.
+	analysis testClasses: { testClass }.
+	inyector := MDSnapshotInyector withTestCases: testClass suite tests
 ]

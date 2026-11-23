@@ -14,7 +14,7 @@ Class {
 { #category : 'as yet unclassified' }
 MDSnapshotDifference >> generateAssert [
 
-	MDAssertionsGenerator new
+	ASAssertionsGenerator new
 		originalSnapshot: originalSnapshot;
 		mutatedSnapshot: mutatedSnapshot;
 		mutationName: mutation operator class name;
