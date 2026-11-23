@@ -7,7 +7,7 @@ This project runs mutation testing on a suite to find assertions that should inc
 ```smalltalk
 Metacello new
   baseline: 'AssertionSuggester';
-  repository: 'github://JavierLarre/AssertionSuggester';
+  repository: 'github://JavierLarre/AssertionSuggester/src';
   load.
 ```
 
