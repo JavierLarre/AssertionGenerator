@@ -1,5 +1,5 @@
 Class {
-	#name : 'MDAssertionsGenerator',
+	#name : 'ASAssertionsGenerator',
 	#superclass : 'Object',
 	#instVars : [
 		'originalSnapshot',
@@ -12,13 +12,13 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-MDAssertionsGenerator >> accessorSequence [
+ASAssertionsGenerator >> accessorSequence [
 
 	^ self accessorSequenceFor: {  }
 ]
 
 { #category : 'as yet unclassified' }
-MDAssertionsGenerator >> accessorSequenceFor: accessorCollection [
+ASAssertionsGenerator >> accessorSequenceFor: accessorCollection [
 
 	| dictionary |
 	dictionary := self accessorsFrom: accessorCollection.
@@ -28,7 +28,7 @@ MDAssertionsGenerator >> accessorSequenceFor: accessorCollection [
 ]
 
 { #category : 'as yet unclassified' }
-MDAssertionsGenerator >> accessorsFor: accessorCollection variable: aSymbol [
+ASAssertionsGenerator >> accessorsFor: accessorCollection variable: aSymbol [
 
 	accessorCollection ifEmpty: [ ^ aSymbol ].
 	^ self accessorsFor: accessorCollection allButFirst variable: ('({1} instVarNamed: #{2})' format: {
@@ -37,7 +37,7 @@ MDAssertionsGenerator >> accessorsFor: accessorCollection variable: aSymbol [
 ]
 
 { #category : 'as yet unclassified' }
-MDAssertionsGenerator >> accessorsFrom: accessorCollection [
+ASAssertionsGenerator >> accessorsFrom: accessorCollection [
 
 	| dictionary | 
 	dictionary := self suggestedAssertions.
@@ -47,7 +47,7 @@ MDAssertionsGenerator >> accessorsFrom: accessorCollection [
 ]
 
 { #category : 'as yet unclassified' }
-MDAssertionsGenerator >> assertsCode [
+ASAssertionsGenerator >> assertsCode [
 
 	^ self accessorSequence
 		  collect: [ :accessorCollection |
@@ -57,13 +57,13 @@ MDAssertionsGenerator >> assertsCode [
 ]
 
 { #category : 'as yet unclassified' }
-MDAssertionsGenerator >> generateAsserts [
+ASAssertionsGenerator >> generateAsserts [
 
 	self testCase class compile: self sourceCode 
 ]
 
 { #category : 'as yet unclassified' }
-MDAssertionsGenerator >> methodNode [
+ASAssertionsGenerator >> methodNode [
 
 	^ Smalltalk compiler
 		  isScripting: true;
@@ -71,25 +71,25 @@ MDAssertionsGenerator >> methodNode [
 ]
 
 { #category : 'accessing' }
-MDAssertionsGenerator >> mutatedSnapshot: anObject [
+ASAssertionsGenerator >> mutatedSnapshot: anObject [
 
 	mutatedSnapshot := anObject
 ]
 
 { #category : 'accessing' }
-MDAssertionsGenerator >> mutationName: anObject [
+ASAssertionsGenerator >> mutationName: anObject [
 
 	mutationName := anObject
 ]
 
 { #category : 'accessing' }
-MDAssertionsGenerator >> originalSnapshot: anObject [
+ASAssertionsGenerator >> originalSnapshot: anObject [
 
 	originalSnapshot := anObject
 ]
 
 { #category : 'as yet unclassified' }
-MDAssertionsGenerator >> sourceCode [
+ASAssertionsGenerator >> sourceCode [
 
 	| ast |
 	ast := self testCaseParseTree.
@@ -100,13 +100,13 @@ MDAssertionsGenerator >> sourceCode [
 ]
 
 { #category : 'as yet unclassified' }
-MDAssertionsGenerator >> suggestedAssertName [
+ASAssertionsGenerator >> suggestedAssertName [
 
 	^ self testCase selector , 'SuggestedFrom' , mutationName
 ]
 
 { #category : 'accessing' }
-MDAssertionsGenerator >> suggestedAssertions [
+ASAssertionsGenerator >> suggestedAssertions [
 
 	^ MDSuggestedAssertions 
 		differentVariablesBetween: originalSnapshot deserializedSender 
@@ -114,7 +114,7 @@ MDAssertionsGenerator >> suggestedAssertions [
 ]
 
 { #category : 'as yet unclassified' }
-MDAssertionsGenerator >> suggestionValue: accessorCollection [
+ASAssertionsGenerator >> suggestionValue: accessorCollection [
 
 	| suggestionValue |
 	suggestionValue := self suggestionValue: accessorCollection from: originalSnapshot deserializedSender.
@@ -122,7 +122,7 @@ MDAssertionsGenerator >> suggestionValue: accessorCollection [
 ]
 
 { #category : 'as yet unclassified' }
-MDAssertionsGenerator >> suggestionValue: accessorCollection from: anObject [
+ASAssertionsGenerator >> suggestionValue: accessorCollection from: anObject [
 
 	^ accessorCollection isEmpty
 		  ifTrue: [ anObject ]
@@ -133,13 +133,13 @@ MDAssertionsGenerator >> suggestionValue: accessorCollection from: anObject [
 ]
 
 { #category : 'accessing' }
-MDAssertionsGenerator >> testCase [
+ASAssertionsGenerator >> testCase [
 
 	^ originalSnapshot sender
 ]
 
 { #category : 'as yet unclassified' }
-MDAssertionsGenerator >> testCaseParseTree [
+ASAssertionsGenerator >> testCaseParseTree [
 
 	^ self testCase class parseTreeForSelector: self testCase selector
 ]
