@@ -4,8 +4,7 @@ Class {
 	#instVars : [
 		'originalSnapshot',
 		'mutationName',
-		'mutatedSnapshot',
-		'methodNode'
+		'mutatedSnapshot'
 	],
 	#category : 'MutantDebugger-Assertions',
 	#package : 'MutantDebugger',
