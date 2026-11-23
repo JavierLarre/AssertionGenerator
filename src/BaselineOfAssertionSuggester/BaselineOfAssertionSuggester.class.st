@@ -13,7 +13,7 @@ BaselineOfAssertionSuggester >> baseline: spec [
 
 			spec
 				package: #AssertionSuggester with: [ spec requires: #( 'MuTalk' ) ];
-				package: #'AssertionSuggester-Tests' with: [ spec requires: #( 'AssertionSuggester' 'MuTalk-Model' ) ].
+				package: #'AssertionSuggester-Tests' with: [ spec requires: #( 'AssertionSuggester' 'MuTalk' ) ].
 			spec
 				group: 'Core' with: #( 'AssertionSuggester' );
 				group: 'CoreTests' with: #( 'AssertionSuggester' 'AssertionSuggester-Tests' );
