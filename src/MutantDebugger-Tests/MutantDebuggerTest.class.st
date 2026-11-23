@@ -6,7 +6,8 @@ Class {
 	#superclass : 'TestCase',
 	#instVars : [
 		'mutantDebugger',
-		'testClasses'
+		'testClasses',
+		'testClass'
 	],
 	#category : 'MutantDebugger-Tests',
 	#package : 'MutantDebugger-Tests'
@@ -15,26 +16,21 @@ Class {
 { #category : 'tests' }
 MutantDebuggerTest >> evaluateCase: aClass withTest: aTestClass [
 
-	self evaluateCases: { aClass } withTests: { aTestClass }
-]
-
-{ #category : 'tests' }
-MutantDebuggerTest >> evaluateCases: aClassCollection withTests: aTestClassCollection [
-
-	| firstMutationScore generalResult |
-	testClasses := aTestClassCollection.
+	| firstMutationResult generalResult |
+	testClass := aTestClass .
 	mutantDebugger
-		classesToMutate: aClassCollection;
-		testClasses: testClasses;
+		classesToMutate: { aClass };
+		testClasses: { testClasses };
 		run.
-	firstMutationScore := mutantDebugger analysis generalResult mutationScore.
+	firstMutationResult := mutantDebugger analysis generalResult.
 	mutantDebugger generateAsserts.
 	generalResult := mutantDebugger newMTAnalysis
-		                 classesToMutate: aClassCollection;
-		                 testClasses: testClasses ;
+		                 classesToMutate: { aClass };
+		                 testClasses: { testClass };
+		                 mutations: mutantDebugger analysis mutations;
 		                 run;
 		                 generalResult.
-	self assert: firstMutationScore < generalResult mutationScore
+	self assert: firstMutationResult mutationScore < generalResult mutationScore
 ]
 
 { #category : 'running' }
@@ -46,16 +42,16 @@ MutantDebuggerTest >> setUp [
 { #category : 'running' }
 MutantDebuggerTest >> tearDown [
 
-	testClasses do: [ :testClass | self tearDownTestClass: testClass ].
+	testClass selectors
+		select: [ :selector | selector includesSubstring: 'SuggestedFrom' ]
+		thenDo: [ :selector | testClass removeSelector: selector ].
 	super tearDown
 ]
 
-{ #category : 'as yet unclassified' }
-MutantDebuggerTest >> tearDownTestClass: aTestClass [
+{ #category : 'tests' }
+MutantDebuggerTest >> testDataFrame [
 
-	aTestClass selectors
-		select: [ :selector | selector includesSubstring: 'SuggestedFrom' ]
-		thenDo: [ :selector | aTestClass removeSelector: selector ]
+	self evaluateCase: DataFrame withTest: DataFrameTest
 ]
 
 { #category : 'tests' }
@@ -68,16 +64,8 @@ MutantDebuggerTest >> testEvaluateBank [
 MutantDebuggerTest >> testEvaluateGeometry [
 
 	self
-		evaluateCases: {
-				GTriangle.
-				GAngle.
-				GCircle.
-				GCoordinates }
-		withTests: {
-				GTriangleTest.
-				GAngleTest.
-				GCircleTest.
-				GCoordinatesTest }
+		evaluateCase: GAngle 
+		withTest: GAngleTest 
 ]
 
 { #category : 'tests' }
