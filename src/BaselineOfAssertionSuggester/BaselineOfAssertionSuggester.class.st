@@ -12,10 +12,10 @@ BaselineOfAssertionSuggester >> baseline: spec [
 			spec baseline: 'MuTalk' with: [ spec repository: 'github://pharo-contributions/mutalk/src' ].
 
 			spec
-				package: #AssertionSuggester with: [ spec requires: #( 'MuTalk' ) ];
-				package: #'AssertionSuggester-Tests' with: [ spec requires: #( 'AssertionSuggester' 'MuTalk' ) ].
+				package: #AssertionSuggester;
+				package: #'AssertionSuggester-Tests' with: [ spec requires: #( 'AssertionSuggester' ) ].
 			spec
 				group: 'Core' with: #( 'AssertionSuggester' );
-				group: 'CoreTests' with: #( 'AssertionSuggester' 'AssertionSuggester-Tests' );
+				group: 'Tests' with: #( 'AssertionSuggester' 'AssertionSuggester-Tests' );
 				group: 'default' with: #( 'AssertionSuggester' 'AssertionSuggester-Tests' ) ]
 ]
