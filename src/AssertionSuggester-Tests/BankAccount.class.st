@@ -5,8 +5,8 @@ Class {
 		'owner',
 		'funds'
 	],
-	#category : 'MutantDebugger-Tests',
-	#package : 'MutantDebugger-Tests'
+	#category : 'AssertionSuggester-Tests',
+	#package : 'AssertionSuggester-Tests'
 }
 
 { #category : 'as yet unclassified' }

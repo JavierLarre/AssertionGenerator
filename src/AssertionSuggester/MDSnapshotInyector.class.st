@@ -4,8 +4,8 @@ Class {
 	#instVars : [
 		'testCases'
 	],
-	#category : 'MutantDebugger-Snapshot',
-	#package : 'MutantDebugger',
+	#category : 'AssertionSuggester-Snapshot',
+	#package : 'AssertionSuggester',
 	#tag : 'Snapshot'
 }
 

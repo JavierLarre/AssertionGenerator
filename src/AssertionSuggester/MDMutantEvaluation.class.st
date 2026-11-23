@@ -1,8 +1,8 @@
 Class {
 	#name : 'MDMutantEvaluation',
 	#superclass : 'MTMutantEvaluation',
-	#category : 'MutantDebugger-MuTalk',
-	#package : 'MutantDebugger',
+	#category : 'AssertionSuggester-MuTalk',
+	#package : 'AssertionSuggester',
 	#tag : 'MuTalk'
 }
 

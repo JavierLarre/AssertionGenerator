@@ -4,8 +4,8 @@ Class {
 	#instVars : [
 		'account'
 	],
-	#category : 'MutantDebugger-Tests',
-	#package : 'MutantDebugger-Tests'
+	#category : 'AssertionSuggester-Tests',
+	#package : 'AssertionSuggester-Tests'
 }
 
 { #category : 'accessing' }

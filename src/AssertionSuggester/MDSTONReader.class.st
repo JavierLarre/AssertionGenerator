@@ -1,8 +1,8 @@
 Class {
 	#name : 'MDSTONReader',
 	#superclass : 'STONReader',
-	#category : 'MutantDebugger-STON',
-	#package : 'MutantDebugger',
+	#category : 'AssertionSuggester-STON',
+	#package : 'AssertionSuggester',
 	#tag : 'STON'
 }
 

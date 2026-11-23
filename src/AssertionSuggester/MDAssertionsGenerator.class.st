@@ -6,8 +6,8 @@ Class {
 		'mutationName',
 		'mutatedSnapshot'
 	],
-	#category : 'MutantDebugger-Assertions',
-	#package : 'MutantDebugger',
+	#category : 'AssertionSuggester-Assertions',
+	#package : 'AssertionSuggester',
 	#tag : 'Assertions'
 }
 

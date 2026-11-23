@@ -7,8 +7,8 @@ Class {
 	#instVars : [
 		'generator'
 	],
-	#category : 'MutantDebugger-Tests-Assertions',
-	#package : 'MutantDebugger-Tests',
+	#category : 'AssertionSuggester-Tests-Assertions',
+	#package : 'AssertionSuggester-Tests',
 	#tag : 'Assertions'
 }
 

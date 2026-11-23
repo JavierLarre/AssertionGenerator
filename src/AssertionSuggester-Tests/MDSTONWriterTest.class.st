@@ -7,8 +7,8 @@ Class {
 	#instVars : [
 		'writer'
 	],
-	#category : 'MutantDebugger-Tests',
-	#package : 'MutantDebugger-Tests'
+	#category : 'AssertionSuggester-Tests',
+	#package : 'AssertionSuggester-Tests'
 }
 
 { #category : 'tests' }

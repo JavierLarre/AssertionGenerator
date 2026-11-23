@@ -1,8 +1,8 @@
 Class {
 	#name : 'MDSTON',
 	#superclass : 'STON',
-	#category : 'MutantDebugger-STON',
-	#package : 'MutantDebugger',
+	#category : 'AssertionSuggester-STON',
+	#package : 'AssertionSuggester',
 	#tag : 'STON'
 }
 

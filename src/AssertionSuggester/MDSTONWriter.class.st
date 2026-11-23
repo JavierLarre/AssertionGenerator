@@ -7,8 +7,8 @@ Class {
 		'target',
 		'maxLevel'
 	],
-	#category : 'MutantDebugger-STON',
-	#package : 'MutantDebugger',
+	#category : 'AssertionSuggester-STON',
+	#package : 'AssertionSuggester',
 	#tag : 'STON'
 }
 

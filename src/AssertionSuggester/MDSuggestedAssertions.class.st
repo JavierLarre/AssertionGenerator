@@ -9,8 +9,8 @@ Class {
 		'suggestedAssertions',
 		'variableValue'
 	],
-	#category : 'MutantDebugger-Assertions',
-	#package : 'MutantDebugger',
+	#category : 'AssertionSuggester-Assertions',
+	#package : 'AssertionSuggester',
 	#tag : 'Assertions'
 }
 

@@ -4,8 +4,8 @@ A MDSnapshotDifferenceTest is a test class for testing the behavior of MDSnapsho
 Class {
 	#name : 'MDSnapshotDifferenceTest',
 	#superclass : 'TestCase',
-	#category : 'MutantDebugger-Tests',
-	#package : 'MutantDebugger-Tests'
+	#category : 'AssertionSuggester-Tests',
+	#package : 'AssertionSuggester-Tests'
 }
 
 { #category : 'running' }

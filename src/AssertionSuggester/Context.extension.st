@@ -1,6 +1,6 @@
 Extension { #name : 'Context' }
 
-{ #category : '*MutantDebugger' }
+{ #category : '*AssertionSuggester' }
 Context >> temporaryVariables [ 
 
 	| tempVars |

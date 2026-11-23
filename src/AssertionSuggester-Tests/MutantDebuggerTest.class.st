@@ -9,8 +9,8 @@ Class {
 		'testClasses',
 		'testClass'
 	],
-	#category : 'MutantDebugger-Tests',
-	#package : 'MutantDebugger-Tests'
+	#category : 'AssertionSuggester-Tests',
+	#package : 'AssertionSuggester-Tests'
 }
 
 { #category : 'tests' }
@@ -36,7 +36,7 @@ MutantDebuggerTest >> evaluateCase: aClass withTest: aTestClass [
 { #category : 'running' }
 MutantDebuggerTest >> setUp [
 	super setUp.
-	mutantDebugger := MutantDebugger new
+	mutantDebugger := AssertionSuggester new
 ]
 
 { #category : 'running' }
