@@ -14,20 +14,32 @@ Class {
 	#tag : 'Snapshot'
 }
 
-{ #category : 'api' }
-AGSnapshotDifference >> generateTestCase [
+{ #category : 'accessing' }
+AGSnapshotDifference >> differenceOfInstVarAt: aSelector [
 
-	AGTestCaseGenerator new
-		originalSnapshot: originalSnapshot;
-		mutatedSnapshot: mutatedSnapshot;
-		mutationName: mutation operator class name;
-		generateAsserts
+	^ self copy
+		mutatedSnapshot: (mutatedSnapshot snapshotOfInstVarAt: aSelector);
+		originalSnapshot: (originalSnapshot snapshotOfInstVarAt: aSelector);
+		yourself
+]
+
+{ #category : 'as yet unclassified' }
+AGSnapshotDifference >> differentNames [
+
+	^ self sender class allInstVarNames select: [ :instVarName |
+		(self differenceOfInstVarAt: instVarName ) isDifferent ]
 ]
 
 { #category : 'testing' }
 AGSnapshotDifference >> isDifferent [
 
 	^ originalSnapshot ~= mutatedSnapshot
+]
+
+{ #category : 'testing' }
+AGSnapshotDifference >> isDifferentSpecies [
+
+	^ originalSnapshot sender species ~= mutatedSnapshot species
 ]
 
 { #category : 'accessing' }
@@ -76,4 +88,10 @@ AGSnapshotDifference >> printOn: aStream [
 		nextPutAll: ', ';
 		print: originalSnapshot;
 		nextPutAll: ')' 
+]
+
+{ #category : 'accessing' }
+AGSnapshotDifference >> sender [
+
+	^ originalSnapshot sender
 ]

@@ -21,6 +21,12 @@ AGSnapshot >> = aSnapshot [
 ]
 
 { #category : 'accessing' }
+AGSnapshot >> deserializedInstVarAt: aSelector [
+
+	^ self deserializedSender instVarNamed: aSelector
+]
+
+{ #category : 'accessing' }
 AGSnapshot >> deserializedSender [
 
 	^ AGSTON fromString: serializedSender 
@@ -74,6 +80,14 @@ AGSnapshot >> serialized: anObject [
 AGSnapshot >> serializedSender [
 
 	^ serializedSender
+]
+
+{ #category : 'accessing' }
+AGSnapshot >> snapshotOfInstVarAt: aSelector [
+
+	^ self copy
+		sender: self deserializedSender;
+		yourself
 ]
 
 { #category : 'accessing' }

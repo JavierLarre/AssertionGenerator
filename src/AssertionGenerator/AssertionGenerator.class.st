@@ -5,11 +5,11 @@ Class {
 	#name : 'AssertionGenerator',
 	#superclass : 'Object',
 	#instVars : [
-		'snapshots',
 		'analysis',
 		'inyector',
 		'classToMutate',
-		'testClass'
+		'testClass',
+		'snapshotTaker'
 	],
 	#category : 'AssertionGenerator-Facade',
 	#package : 'AssertionGenerator',
@@ -38,7 +38,7 @@ AssertionGenerator >> classToMutate: anObject [
 { #category : 'running' }
 AssertionGenerator >> collectSnapshots [
 
-	snapshots stopCollectingMutations.
+	snapshotTaker stopCollectingMutations.
 	^ [
 		  inyector inyectCodeIntoTestCases.
 		  analysis run ] ensure: [ inyector restoreTestCases ]
@@ -55,9 +55,9 @@ AssertionGenerator >> findFor: aTestClass mutating: aClass [
 ]
 
 { #category : 'code generation' }
-AssertionGenerator >> generateAsserts [
+AssertionGenerator >> generateTestCases [
 
-	snapshots differences do: #generateTestCase
+	AGTestCaseGenerator generateTests: snapshotTaker differences 
 ]
 
 { #category : 'accessing' }
@@ -72,7 +72,7 @@ AssertionGenerator >> generatedTestCases [
 AssertionGenerator >> initialize [
 
 	super initialize.
-	snapshots := AGSnapshotTaker uniqueInstance
+	snapshotTaker := AGSnapshotTaker uniqueInstance
 		             reset;
 		             yourself.
 	analysis := self newMTAnalysis.
@@ -103,7 +103,7 @@ AssertionGenerator >> newResult [
 		          yourself.
 	self collectSnapshots.
 	result mutationAnalysisBefore: analysis generalResult.
-	self generateAsserts.
+	self generateTestCases .
 	result suggestedTestMethods: self generatedTestCases.
 	self
 		startNewAnalysis;
@@ -122,7 +122,7 @@ AssertionGenerator >> removeGeneratedTests [
 { #category : 'accessing' }
 AssertionGenerator >> snapshots [
 
-	^ snapshots
+	^ snapshotTaker
 ]
 
 { #category : 'running' }

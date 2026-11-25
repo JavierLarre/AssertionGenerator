@@ -14,9 +14,19 @@ Class {
 
 { #category : 'running' }
 AGTestCaseGeneratorTest >> setUp [
+
 	super setUp.
 
 	generator := AGTestCaseGenerator new
+		snapshotDifference: (AGSnapshotDifference new)
+]
+
+{ #category : 'running' }
+AGTestCaseGeneratorTest >> tearDown [
+
+	AssertionGenerator new
+		testClass: AGBankAccountTest;
+		removeGeneratedTests
 ]
 
 { #category : 'tests' }
@@ -26,10 +36,10 @@ AGTestCaseGeneratorTest >> testArraysAreGenerated [
 	originalBank := AGBankAccount new
 		                owner: { 1 };
 		                yourself.
-	generator
+	generator snapshotDifference
 		originalSnapshot: (AGSnapshot new sender: originalBank);
 		mutatedSnapshot: (AGSnapshot new sender: AGBankAccount new).
-		
+
 	self assertCollection: generator assertsCode hasSameElements: { 'self assert: owner equals: #(1)' }
 ]
 
@@ -40,7 +50,7 @@ AGTestCaseGeneratorTest >> testAssertsCode [
 	originalBank := AGBankAccount new
 		                owner: 'difference';
 		                yourself.
-	generator
+	generator snapshotDifference
 		originalSnapshot: (AGSnapshot new sender: originalBank);
 		mutatedSnapshot: (AGSnapshot new sender: AGBankAccount new).
 
@@ -54,11 +64,78 @@ AGTestCaseGeneratorTest >> testCollectionsAreGenerated [
 	originalBank := AGBankAccount new
 		                owner: (OrderedCollection with: 1);
 		                yourself.
-	generator
+	generator snapshotDifference
 		originalSnapshot: (AGSnapshot new sender: originalBank);
 		mutatedSnapshot: (AGSnapshot new sender: AGBankAccount new).
 
-	self 
-		assertCollection: generator assertsCode 
+	self
+		assertCollection: generator assertsCode
 		hasSameElements: { 'self assert: owner equals: ((OrderedCollection new) add: 1; yourself)' }
+]
+
+{ #category : 'tests' }
+AGTestCaseGeneratorTest >> testGenerateAsserts [
+
+	| testCase mutatedTestCase |
+	testCase := (AGBankAccountTest selector: #testDeposit)
+		            account: AGBankAccount new;
+		            yourself.
+	mutatedTestCase := testCase copy.
+	mutatedTestCase account: (AGBankAccount new
+			 owner: nil;
+			 yourself).
+	generator snapshotDifference
+		originalSnapshot: (AGSnapshot new sender: testCase);
+		mutatedSnapshot: (AGSnapshot new sender: mutatedTestCase);
+		mutation: (MTMethodMutation
+				 for: AGBankAccount >> #initialize
+				 using: MTAssignmentNullifierOperator new
+				 nodeNumber: 2
+				 ofClass: AGBankAccount
+				 withData: OCAssignmentNode new).
+	generator generateAsserts.
+	self
+		assert: (AGBankAccountTest includesSelector: #testDepositSuggestedFromMTAssignmentNullifierOperator)
+		description: 'test was not generated or was generated with the wrong name'.
+	self
+		assert: (AGBankAccountTest sourceCodeAt: #testDepositSuggestedFromMTAssignmentNullifierOperator)
+		equals: 'testDepositSuggestedFromMTAssignmentNullifierOperator
+
+	account deposit: 100.
+	self assert: account balance equals: 100.
+	self assert: (account instVarNamed: #owner) equals: '''''
+]
+
+{ #category : 'tests' }
+AGTestCaseGeneratorTest >> testGenerateMultipleAsserts [
+
+	| testCase mutatedTestCase |
+	testCase := (AGBankAccountTest selector: #testWithdrawTooMuch)
+		            account: AGBankAccount new;
+		            yourself.
+	mutatedTestCase := testCase copy.
+	mutatedTestCase account: (AGBankAccount new
+			 owner: nil;
+			 deposit: 1;
+			 yourself).
+	generator snapshotDifference
+		originalSnapshot: (AGSnapshot new sender: testCase);
+		mutatedSnapshot: (AGSnapshot new sender: mutatedTestCase);
+		mutation: (MTMethodMutation
+				 for: AGBankAccount >> #initialize
+				 using: MTAssignmentNullifierOperator new
+				 nodeNumber: 2
+				 ofClass: AGBankAccount
+				 withData: OCAssignmentNode new).
+	generator generateAsserts.
+	self
+		assert: (AGBankAccountTest includesSelector: #testWithdrawTooMuchSuggestedFromMTAssignmentNullifierOperator)
+		description: 'test was not generated or was generated with the wrong name'.
+	self
+		assert: (AGBankAccountTest sourceCodeAt: #testWithdrawTooMuchSuggestedFromMTAssignmentNullifierOperator)
+		equals: 'testWithdrawTooMuchSuggestedFromMTAssignmentNullifierOperator
+
+	self should: [ account withdraw: 1 ] raise: Error.
+	self assert: (account instVarNamed: #funds) equals: 0.
+	self assert: (account instVarNamed: #owner) equals: '''''
 ]

@@ -5,14 +5,26 @@ Class {
 	#name : 'AGTestCaseGenerator',
 	#superclass : 'Object',
 	#instVars : [
-		'originalSnapshot',
-		'mutationName',
-		'mutatedSnapshot'
+		'snapshotDifference'
 	],
 	#category : 'AssertionGenerator-Assertions',
 	#package : 'AssertionGenerator',
 	#tag : 'Assertions'
 }
+
+{ #category : 'api' }
+AGTestCaseGenerator class >> generateTest: aDifference [
+
+	self new
+		snapshotDifference: aDifference;
+		generateAsserts
+]
+
+{ #category : 'api' }
+AGTestCaseGenerator class >> generateTests: differences [
+
+	differences do: [ :difference | self generateTest: difference ]
+]
 
 { #category : 'accessing' }
 AGTestCaseGenerator >> accessorSequence [
@@ -75,21 +87,15 @@ AGTestCaseGenerator >> methodNode [
 ]
 
 { #category : 'accessing' }
-AGTestCaseGenerator >> mutatedSnapshot: anObject [
+AGTestCaseGenerator >> snapshotDifference [
 
-	mutatedSnapshot := anObject
+	^ snapshotDifference
 ]
 
 { #category : 'accessing' }
-AGTestCaseGenerator >> mutationName: anObject [
+AGTestCaseGenerator >> snapshotDifference: anObject [
 
-	mutationName := anObject
-]
-
-{ #category : 'accessing' }
-AGTestCaseGenerator >> originalSnapshot: anObject [
-
-	originalSnapshot := anObject
+	snapshotDifference := anObject
 ]
 
 { #category : 'as yet unclassified' }
@@ -106,23 +112,25 @@ AGTestCaseGenerator >> sourceCode [
 { #category : 'as yet unclassified' }
 AGTestCaseGenerator >> suggestedAssertName [
 
-	^ self testCase selector , 'SuggestedFrom' , mutationName
+	^ self testCase selector , 'SuggestedFrom' , snapshotDifference mutation operator class name
 ]
 
 { #category : 'accessing' }
 AGTestCaseGenerator >> suggestedAssertions [
 
-	^ AGSuggestedAssertions 
-		differentVariablesBetween: originalSnapshot deserializedSender 
-		and: mutatedSnapshot deserializedSender 
+	^ AGSuggestedAssertions new
+		snapshotDifference: snapshotDifference;
+		differentVariables
 ]
 
 { #category : 'as yet unclassified' }
 AGTestCaseGenerator >> suggestionValue: accessorCollection [
 
 	| suggestionValue |
-	suggestionValue := self suggestionValue: accessorCollection from: originalSnapshot deserializedSender.
-	^ suggestionValue 
+	suggestionValue := self 
+		suggestionValue: accessorCollection 
+		from: snapshotDifference originalSnapshot deserializedSender.
+	^ suggestionValue
 ]
 
 { #category : 'as yet unclassified' }
@@ -139,7 +147,7 @@ AGTestCaseGenerator >> suggestionValue: accessorCollection from: anObject [
 { #category : 'accessing' }
 AGTestCaseGenerator >> testCase [
 
-	^ originalSnapshot sender
+	^ snapshotDifference sender
 ]
 
 { #category : 'as yet unclassified' }
