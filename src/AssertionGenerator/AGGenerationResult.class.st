@@ -1,5 +1,8 @@
+"
+I store the conclusion of running mutation testing with the generated tests that include new assertions
+"
 Class {
-	#name : 'AGAnalysis',
+	#name : 'AGGenerationResult',
 	#superclass : 'Object',
 	#instVars : [
 		'mutatedClass',
