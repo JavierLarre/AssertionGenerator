@@ -1,3 +1,6 @@
+"
+Use `AssertionGenerator>>#findFor:mutating:` to look for assertions that increase mutation score
+"
 Class {
 	#name : 'AssertionGenerator',
 	#superclass : 'Object',
@@ -32,29 +35,37 @@ AssertionGenerator >> classToMutate: anObject [
 	analysis classesToMutate: { classToMutate }
 ]
 
-{ #category : 'accessing' }
-AssertionGenerator >> findFor: aTestClass mutating: aClass [
+{ #category : 'running' }
+AssertionGenerator >> collectSnapshots [
 
-	| firstMutationResult generalResult |
-	self
-		  testClass: aTestClass;
-		  classToMutate: aClass;
-		  run.
-	firstMutationResult := analysis generalResult.
-	self 
-		generateAsserts;
-		startNewAnalysis;
-		run.
-	generalResult := analysis generalResult.
-	
-	self assert: firstMutationResult mutationScore < generalResult mutationScore
-	 
+	snapshots stopCollectingMutations.
+	^ [
+		  inyector inyectCodeIntoTestCases.
+		  analysis run ] ensure: [ inyector restoreTestCases ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'api' }
+AssertionGenerator >> findFor: aTestClass mutating: aClass [
+
+	self
+		testClass: aTestClass;
+		classToMutate: aClass.
+		
+	^ [ self newResult ] ensure: [ self removeGeneratedTests ]
+]
+
+{ #category : 'code generation' }
 AssertionGenerator >> generateAsserts [
 
-	self mutationDifferences do: #generateTestCase
+	snapshots differences do: #generateTestCase
+]
+
+{ #category : 'accessing' }
+AssertionGenerator >> generatedTestCases [
+
+	^ testClass selectors
+		  select: [ :selector | selector includesSubstring: 'SuggestedFrom' ]
+		  thenCollect: [ :selector | testClass >> selector ]
 ]
 
 { #category : 'initialization' }
@@ -74,27 +85,38 @@ AssertionGenerator >> inyector [
 	^ inyector
 ]
 
-{ #category : 'as yet unclassified' }
-AssertionGenerator >> mutationDifferences [ 
-
-	^ snapshots differences 
-]
-
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 AssertionGenerator >> newMTAnalysis [
 
 	^ AGMuTalkAnalysis new
-		  mutantGenerationStrategy: MTAllMutantGenerationStrategy new;
+		  budget: MTFreeBudget new;
 		  yourself
 ]
 
-{ #category : 'running' }
-AssertionGenerator >> run [
+{ #category : 'api' }
+AssertionGenerator >> newResult [
 
-	snapshots stopCollectingMutations.
-	^ [
-		  inyector inyectCodeIntoTestCases.
-		  analysis run ] ensure: [ inyector restoreTestCases ]
+	| result |
+	result := AGGenerationResult new
+		          testClass: testClass;
+		          mutatedClass: classToMutate;
+		          yourself.
+	self collectSnapshots.
+	result mutationAnalysisBefore: analysis generalResult.
+	self generateAsserts.
+	result suggestedTestMethods: self generatedTestCases.
+	self
+		startNewAnalysis;
+		collectSnapshots.
+	result mutationAnalysisAfter: analysis generalResult.
+
+	^ result
+]
+
+{ #category : 'removing' }
+AssertionGenerator >> removeGeneratedTests [
+
+	^ self generatedTestCases do: [ :testCase | testClass removeSelector: testCase selector ]
 ]
 
 { #category : 'accessing' }
@@ -103,10 +125,10 @@ AssertionGenerator >> snapshots [
 	^ snapshots
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'running' }
 AssertionGenerator >> startNewAnalysis [
 
-	analysis := self newMTAnalysis 
+	analysis := self newMTAnalysis
 		            classesToMutate: { classToMutate };
 		            testClasses: { testClass };
 		            mutations: analysis mutations;
