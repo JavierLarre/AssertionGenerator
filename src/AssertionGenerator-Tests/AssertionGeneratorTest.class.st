@@ -18,19 +18,13 @@ AssertionGeneratorTest >> setUp [
 	assertionGenerator := AssertionGenerator new
 ]
 
-{ #category : 'running' }
-AssertionGeneratorTest >> tearDown [
-
-	testClass selectors
-		select: [ :selector | selector includesSubstring: 'SuggestedFrom' ]
-		thenDo: [ :selector | testClass removeSelector: selector ].
-	super tearDown
-]
-
 { #category : 'tests' }
 AssertionGeneratorTest >> testEvaluateBank [
 
-	self evaluateCase: AGBankAccount withTest: AGBankAccountTest 
+	| result |
+	result := assertionGenerator findFor: AGBankAccountTest mutating: AGBankAccount.
+	self assertEmpty: assertionGenerator generatedTestCases.
+	self assert: result mutationAnalysisBefore mutationScore < result mutationAnalysisAfter mutationScore
 ]
 
 { #category : 'tests' }
