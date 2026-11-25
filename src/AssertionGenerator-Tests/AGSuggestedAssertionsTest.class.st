@@ -21,5 +21,5 @@ AGSuggestedAssertionsTest >> testDifferentVariables [
 		                      snapshotDifference: snapshotDifference;
 		                      yourself.
 		
-	self assert: assertionSuggester differentVariables equals: (Dictionary newFromKeys: #( owner ) andValues: { '' } )
+	self assert: assertionSuggester differentVariables equals: (Dictionary newFromKeys: #( owner ) andValues: { Dictionary new } )
 ]
