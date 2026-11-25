@@ -34,6 +34,20 @@ AGTestCaseGeneratorTest >> testArraysAreGenerated [
 ]
 
 { #category : 'tests' }
+AGTestCaseGeneratorTest >> testAssertsCode [
+
+	| originalBank |
+	originalBank := AGBankAccount new
+		                owner: 'difference';
+		                yourself.
+	generator
+		originalSnapshot: (AGSnapshot new sender: originalBank);
+		mutatedSnapshot: (AGSnapshot new sender: AGBankAccount new).
+
+	self assert: generator assertsCode first equals: 'self assert: owner equals: ''difference'''
+]
+
+{ #category : 'tests' }
 AGTestCaseGeneratorTest >> testCollectionsAreGenerated [
 
 	| originalBank |
