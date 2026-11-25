@@ -6,8 +6,8 @@ This project runs mutation testing on a suite to find assertions that should inc
 
 ```smalltalk
 Metacello new
-  baseline: 'AssertionSuggester';
-  repository: 'github://JavierLarre/AssertionSuggester/src';
+  baseline: 'AssertionGenerator';
+  repository: 'github://JavierLarre/AssertionGenerator/src';
   load.
 ```
 
@@ -16,6 +16,6 @@ Metacello new
 ```smalltalk
 | assertions |
 "A collection of suggested assertions that increase mutation score"
-assertions := AssertionSuggester findFor: BankAccountTest mutating: BankAccount.
+assertions := AssertionGenerator findFor: AGBankAccountTest mutating: AGBankAccount.
 assertions inspect
 ```
