@@ -33,12 +33,15 @@ AssertionGeneratorTest >> testGeneratedTestCases [
 	| ast |
 	ast := AGBankAccountTest parseTreeForSelector: #testDeposit.
 	ast selector: #testDepositSuggestedFromMe.
-	AGBankAccountTest compile: ast formattedCode.
-	assertionGenerator testClass: AGBankAccountTest.
-	
-	self
-		assertCollection: assertionGenerator generatedTestCases
-		hasSameElements: { (AGBankAccountTest >> #testDepositSuggestedFromMe) }.
+
+	[
+		AGBankAccountTest compile: ast formattedCode.
+		assertionGenerator testClass: AGBankAccountTest.
+
+		self
+			assertCollection: assertionGenerator generatedTestCases
+			hasSameElements: { (AGBankAccountTest >> #testDepositSuggestedFromMe) } ] ensure: [
+		AGBankAccountTest removeSelector: #testDepositSuggestedFromMe ]
 ]
 
 { #category : 'tests' }
