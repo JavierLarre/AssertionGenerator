@@ -124,12 +124,6 @@ AGSnapshotTaker >> reset [
 ]
 
 { #category : 'accessing' }
-AGSnapshotTaker >> sender [
-
-	^ sender 
-]
-
-{ #category : 'accessing' }
 AGSnapshotTaker >> sender: anObject [
 
 	sender := anObject
