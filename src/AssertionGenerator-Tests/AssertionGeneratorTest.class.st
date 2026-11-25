@@ -15,7 +15,7 @@ Class {
 { #category : 'running' }
 AssertionGeneratorTest >> setUp [
 	super setUp.
-	mutantDebugger := AssertionGenerator new
+	assertionGenerator := AssertionGenerator new
 ]
 
 { #category : 'running' }
@@ -31,4 +31,32 @@ AssertionGeneratorTest >> tearDown [
 AssertionGeneratorTest >> testEvaluateBank [
 
 	self evaluateCase: AGBankAccount withTest: AGBankAccountTest 
+]
+
+{ #category : 'tests' }
+AssertionGeneratorTest >> testGeneratedTestCases [
+
+	| ast |
+	ast := AGBankAccountTest parseTreeForSelector: #testDeposit.
+	ast selector: #testDepositSuggestedFromMe.
+	AGBankAccountTest compile: ast formattedCode.
+	assertionGenerator testClass: AGBankAccountTest.
+	
+	self
+		assertCollection: assertionGenerator generatedTestCases
+		hasSameElements: { (AGBankAccountTest >> #testDepositSuggestedFromMe) }.
+]
+
+{ #category : 'tests' }
+AssertionGeneratorTest >> testRemoveGeneratedTestCases [
+
+	| ast |
+	ast := AGBankAccountTest parseTreeForSelector: #testDeposit.
+	ast selector: #testDepositSuggestedFromMe.
+	AGBankAccountTest compile: ast formattedCode.
+	assertionGenerator testClass: AGBankAccountTest.
+	
+	assertionGenerator removeGeneratedTests.
+	
+	self assertEmpty: assertionGenerator generatedTestCases
 ]
