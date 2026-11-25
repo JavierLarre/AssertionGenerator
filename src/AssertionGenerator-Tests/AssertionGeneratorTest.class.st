@@ -18,6 +18,15 @@ AssertionGeneratorTest >> setUp [
 	assertionGenerator := AssertionGenerator new
 ]
 
+{ #category : 'running' }
+AssertionGeneratorTest >> tearDown [
+
+	AssertionGenerator new
+		testClass: AGBankAccountTest;
+		removeGeneratedTests.
+	super tearDown 
+]
+
 { #category : 'tests' }
 AssertionGeneratorTest >> testEvaluateBank [
 
