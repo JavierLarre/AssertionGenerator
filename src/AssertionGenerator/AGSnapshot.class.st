@@ -1,3 +1,6 @@
+"
+I store the serialization of an object, generally a test case, taken during the execution of a test.
+"
 Class {
 	#name : 'AGSnapshot',
 	#superclass : 'Object',
@@ -17,10 +20,16 @@ AGSnapshot >> = aSnapshot [
 	^ serializedSender = aSnapshot serializedSender and: [ temporaryVariables = aSnapshot temporaryVariables ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 AGSnapshot >> deserializedSender [
 
 	^ AGSTON fromString: serializedSender 
+]
+
+{ #category : 'comparing' }
+AGSnapshot >> hash [
+
+	^ serializedSender hash
 ]
 
 { #category : 'initialization' }
@@ -55,7 +64,7 @@ AGSnapshot >> sender: anObject [
 	serializedSender := self serialized: anObject 
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'serializing' }
 AGSnapshot >> serialized: anObject [
 
 	^ AGSTON toString: anObject

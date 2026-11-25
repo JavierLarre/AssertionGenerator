@@ -84,7 +84,7 @@ AGSuggestedAssertions >> originalSender: anObject [
 	originalSender := anObject
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'searching' }
 AGSuggestedAssertions >> searchDifferentVariables [
 
 	| differentNames |

@@ -1,3 +1,6 @@
+"
+I generate the assertions' code for a new test case based on the present in the suite, using the differences between the snapshots
+"
 Class {
 	#name : 'AGTestCaseGenerator',
 	#superclass : 'Object',
@@ -11,23 +14,24 @@ Class {
 	#tag : 'Assertions'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 AGTestCaseGenerator >> accessorSequence [
 
 	^ self accessorSequenceFor: {  }
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 AGTestCaseGenerator >> accessorSequenceFor: accessorCollection [
 
 	| dictionary |
 	dictionary := self accessorsFrom: accessorCollection.
 	dictionary isEmpty ifTrue: [ ^ Array with: accessorCollection ].
 	^ OrderedCollection streamContents: [ :stream |
-		  dictionary keysDo: [ :accessor | stream nextPutAll: (self accessorSequenceFor: accessorCollection , (Array with: accessor)) ] ]
+		  dictionary keysDo: [ :accessor | 
+			stream nextPutAll: (self accessorSequenceFor: accessorCollection , (Array with: accessor)) ] ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 AGTestCaseGenerator >> accessorsFor: accessorCollection variable: aSymbol [
 
 	accessorCollection ifEmpty: [ ^ aSymbol ].
@@ -36,7 +40,7 @@ AGTestCaseGenerator >> accessorsFor: accessorCollection variable: aSymbol [
 				   accessorCollection first })
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 AGTestCaseGenerator >> accessorsFrom: accessorCollection [
 
 	| dictionary | 
@@ -56,7 +60,7 @@ AGTestCaseGenerator >> assertsCode [
 						  (self suggestionValue: accessorCollection) storeString } ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'api' }
 AGTestCaseGenerator >> generateAsserts [
 
 	self testCase class compile: self sourceCode 

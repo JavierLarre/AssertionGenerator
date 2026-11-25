@@ -40,7 +40,7 @@ AGSnapshotTaker class >> withContext: aContext [
 		yourself
 ]
 
-{ #category : 'initialization' }
+{ #category : 'accessing' }
 AGSnapshotTaker >> context: aContext [
 	context := aContext 
 ]
@@ -58,7 +58,7 @@ AGSnapshotTaker >> currentMutation: anObject [
 	currentMutation := anObject
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 AGSnapshotTaker >> differences [
 
 	| differences |
@@ -117,7 +117,7 @@ AGSnapshotTaker >> originalSnapshots: anObject [
 	originalSnapshots := anObject
 ]
 
-{ #category : 'initialization' }
+{ #category : 'resetting' }
 AGSnapshotTaker >> reset [
 
 	self initialize
@@ -148,7 +148,7 @@ AGSnapshotTaker >> serializedTemporaries [
 	^ STON toString: context temporaryVariables 
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'api' }
 AGSnapshotTaker >> startCollectingMutations [
 
 	isTestMutated := true
@@ -163,7 +163,7 @@ AGSnapshotTaker >> stonOn: aStonWriter [
 	^ [ super stonOn: aStonWriter ] ensure: [ context := tempContext ] 
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'api' }
 AGSnapshotTaker >> stopCollectingMutations [
 
 	isTestMutated := false

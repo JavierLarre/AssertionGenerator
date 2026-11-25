@@ -1,3 +1,6 @@
+"
+My sole responsability is to replace `AGMuTalkMutantEvaluation` in `AGMuTalkAnalysis>>#generateResults`, but will be replace once a better way to extend MuTalk is found
+"
 Class {
 	#name : 'AGMuTalkAnalysis',
 	#superclass : 'MTAnalysis',

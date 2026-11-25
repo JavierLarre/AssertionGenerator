@@ -1,3 +1,6 @@
+"
+I inject `AGSnapshotInyector>>#codeToInyect` into tests so that a snapshot of it's execution can be taken while running tests. 
+"
 Class {
 	#name : 'AGSnapshotInyector',
 	#superclass : 'Object',
@@ -22,7 +25,7 @@ AGSnapshotInyector class >> withTestCases: aTestCaseCollection [
 		yourself
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 AGSnapshotInyector >> codeToInyect [
 
 	AGSnapshotTaker uniqueInstance takeSnapshotInTest: self
@@ -34,7 +37,7 @@ AGSnapshotInyector >> initialize [
 	testCases := Dictionary new
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'applying' }
 AGSnapshotInyector >> inyectCodeIntoTestCase: aTestCase [
 	| parseTree |
 	parseTree := (testCases at: aTestCase) parseTree.
@@ -47,20 +50,20 @@ AGSnapshotInyector >> inyectCodeIntoTestCases [
 	testCases keysDo: [ :testCase | self inyectCodeIntoTestCase: testCase ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 AGSnapshotInyector >> nodeToInyect [
 
 	^ (self class >> #codeToInyect) parseTree body statements first
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'running' }
 AGSnapshotInyector >> restoreTestCases [
 
 	testCases keysAndValuesDo: [ :testCase :compiledMethod |
 		testCase class compile: compiledMethod parseTree formattedCode ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'executing' }
 AGSnapshotInyector >> runInstrumentedTestCases [
 
 	(TestSuite named: self class name asString)

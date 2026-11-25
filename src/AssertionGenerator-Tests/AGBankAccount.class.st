@@ -1,3 +1,6 @@
+"
+I am a fixture for testing assertion generation
+"
 Class {
 	#name : 'AGBankAccount',
 	#superclass : 'Object',

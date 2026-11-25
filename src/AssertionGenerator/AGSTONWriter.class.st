@@ -1,3 +1,6 @@
+"
+I serialize objects for snapshots, handling cases where an object cannot be serialized. `AGSTONWriter>>#maxLevel:` is used for controling the recursion depth of serializing objects composed of objects.
+"
 Class {
 	#name : 'AGSTONWriter',
 	#superclass : 'STONWriter',
@@ -18,7 +21,7 @@ AGSTONWriter >> blacklist: anObject [
 	blacklist := anObject
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'testing' }
 AGSTONWriter >> hasBlacklistedVariable [
 
 	^ self instanceVariableNames includesAny: blacklist
@@ -41,19 +44,19 @@ AGSTONWriter >> initialize [
 	maxLevel := 3
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 AGSTONWriter >> instanceVariableNames [
 
 	^ target class allInstVarNames
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'enumerating' }
 AGSTONWriter >> instanceVariableNamesInBlacklist [
 
 	^ self instanceVariableNames intersection: blacklist
 ]
 
-{ #category : 'writing' }
+{ #category : 'evaluating' }
 AGSTONWriter >> isSerializable: anObject [
 
 	anObject class isVariable ifFalse: [ ^ true ].
@@ -69,7 +72,7 @@ AGSTONWriter >> maxLevel: aNumber [
 	maxLevel := aNumber
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'writing' }
 AGSTONWriter >> nullifyInstVar: instVarNamed [
 
 	variables at: instVarNamed put: (target instVarNamed: instVarNamed ).
@@ -86,7 +89,7 @@ AGSTONWriter >> nullifyUnserializableObjects [
 					self nullifyInstVar: instVarName ] ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'writing' }
 AGSTONWriter >> nullifyVariables [
 
 	variables removeAll.
@@ -94,13 +97,13 @@ AGSTONWriter >> nullifyVariables [
 			self nullifyInstVar: instVarName ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 AGSTONWriter >> restoreVariable: anObject [
 
 	variables keysAndValuesDo: [ :instVarName :instVarValue | anObject instVarNamed: instVarName put: instVarValue ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 AGSTONWriter >> restoreVariables [
 
 	variables keysAndValuesDo: [ :instVarName :instVarValue | target instVarNamed: instVarName put: instVarValue ]

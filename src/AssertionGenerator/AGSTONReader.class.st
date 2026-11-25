@@ -1,3 +1,6 @@
+"
+I set the instance variables of an object to nil after deserializing to prevent the `initialize` method from altering a snapshot.
+"
 Class {
 	#name : 'AGSTONReader',
 	#superclass : 'STONReader',

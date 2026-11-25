@@ -1,3 +1,6 @@
+"
+I hold the reference between two snapshots of the same test, where one is a mutation and the other is the original execution.
+"
 Class {
 	#name : 'AGSnapshotDifference',
 	#superclass : 'Object',
@@ -11,7 +14,7 @@ Class {
 	#tag : 'Snapshot'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'api' }
 AGSnapshotDifference >> generateTestCase [
 
 	AGTestCaseGenerator new
