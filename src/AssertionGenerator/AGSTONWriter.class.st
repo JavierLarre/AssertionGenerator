@@ -6,9 +6,9 @@ Class {
 	#superclass : 'STONWriter',
 	#instVars : [
 		'blacklist',
-		'variables',
 		'target',
-		'maxLevel'
+		'maxLevel',
+		'nullifiedVariables'
 	],
 	#category : 'AssertionGenerator-STON',
 	#package : 'AssertionGenerator',
@@ -40,7 +40,7 @@ AGSTONWriter >> initialize [
 
 	super initialize.
 	blacklist := Set with: #expectedFails.
-	variables := Dictionary new.
+	nullifiedVariables := Dictionary new.
 	maxLevel := 3
 ]
 
@@ -75,7 +75,7 @@ AGSTONWriter >> maxLevel: aNumber [
 { #category : 'writing' }
 AGSTONWriter >> nullifyInstVar: instVarNamed [
 
-	variables at: instVarNamed put: (target instVarNamed: instVarNamed ).
+	nullifiedVariables at: instVarNamed put: (target instVarNamed: instVarNamed ).
 	target instVarNamed: instVarNamed put: nil
 ]
 
@@ -92,7 +92,7 @@ AGSTONWriter >> nullifyUnserializableObjects [
 { #category : 'writing' }
 AGSTONWriter >> nullifyVariables [
 
-	variables removeAll.
+	nullifiedVariables removeAll.
 	self instanceVariableNamesInBlacklist do: [ :instVarName |
 			self nullifyInstVar: instVarName ]
 ]
@@ -100,13 +100,13 @@ AGSTONWriter >> nullifyVariables [
 { #category : 'private' }
 AGSTONWriter >> restoreVariable: anObject [
 
-	variables keysAndValuesDo: [ :instVarName :instVarValue | anObject instVarNamed: instVarName put: instVarValue ]
+	nullifiedVariables keysAndValuesDo: [ :instVarName :instVarValue | anObject instVarNamed: instVarName put: instVarValue ]
 ]
 
 { #category : 'private' }
 AGSTONWriter >> restoreVariables [
 
-	variables keysAndValuesDo: [ :instVarName :instVarValue | target instVarNamed: instVarName put: instVarValue ]
+	nullifiedVariables keysAndValuesDo: [ :instVarName :instVarValue | target instVarNamed: instVarName put: instVarValue ]
 ]
 
 { #category : 'writing' }
