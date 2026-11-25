@@ -86,8 +86,8 @@ AGSnapshot >> serializedSender [
 AGSnapshot >> snapshotOfInstVarAt: aSelector [
 
 	^ self copy
-		sender: self deserializedSender;
-		yourself
+		  sender: (self deserializedSender instVarNamed: aSelector );
+		  yourself
 ]
 
 { #category : 'accessing' }

@@ -89,15 +89,15 @@ AGSuggestedAssertions >> originalSender: anObject [
 AGSuggestedAssertions >> searchDifferentVariables [
 
 	| differentNames |
-	snapshotDifference originalSnapshot deserializedSender species ~= snapshotDifference mutatedSnapshot deserializedSender species ifTrue: [ ^ self ].
+	snapshotDifference originalSnapshot deserializedSender species ~= snapshotDifference mutatedSnapshot deserializedSender species
+		ifTrue: [ ^ self ].
 	differentNames := snapshotDifference originalSnapshot deserializedSender class allInstVarNames select: [ :instVarName |
-		                  (AGSTON toString: (snapshotDifference originalSnapshot deserializedSender instVarNamed: instVarName ) ~= (AGSTON toString: (snapshotDifference mutatedSnapshot deserializedSender instVarNamed: instVarName ))) ].
+			                  (AGSTON toString: (snapshotDifference originalSnapshot deserializedSender instVarNamed: instVarName))
+				                  ~= (AGSTON toString: (snapshotDifference mutatedSnapshot deserializedSender instVarNamed: instVarName)) ].
 	differentNames do: [ :instVarName |
-			differentVariables
-				at: instVarName
-				put:
-					(self class new 
-					snapshotDifference: (snapshotDifference differenceOfInstVarAt: instVarName ); yourself ) differentVariables ]
+			differentVariables at: instVarName put: (self class new
+					 snapshotDifference: (snapshotDifference differenceOfInstVarAt: instVarName);
+					 yourself) differentVariables ]
 ]
 
 { #category : 'accessing' }
