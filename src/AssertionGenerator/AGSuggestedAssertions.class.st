@@ -1,3 +1,6 @@
+"
+I am a tree node where each node contains a instance variable. A path in this tree indicates a difference between those variables in the snapshots
+"
 Class {
 	#name : 'AGSuggestedAssertions',
 	#superclass : 'Object',
@@ -96,21 +99,6 @@ AGSuggestedAssertions >> searchDifferentVariables [
 					(self class
 						 originalSender: (originalSender instVarNamed: instVarName)
 						 mutatedSender: (mutatedSender instVarNamed: instVarName)) differentVariables ]
-]
-
-{ #category : 'as yet unclassified' }
-AGSuggestedAssertions >> suggestedAssertions [
-
-	| differentNames |
-	originalSender species = mutatedSender species ifFalse: [ ^ suggestedAssertions ].
-	differentNames := originalSender class allInstVarNames select: [ :instVarName |
-			                  (AGSTON toString: (originalSender instVarNamed: instVarName)) ~= (AGSTON toString: (mutatedSender instVarNamed: instVarName)) ].
-	suggestedAssertions addAll: (differentNames collect: [ :instVarName |
-				 self class new
-					 variable: instVarName;
-					 originalSender: (originalSender instVarNamed: instVarName);
-					 mutatedSender: (mutatedSender instVarNamed: instVarName);
-					 yourself ])
 ]
 
 { #category : 'accessing' }
