@@ -49,6 +49,14 @@ AGBankAccountTest >> testPlusDeposit [
 ]
 
 { #category : 'tests' }
+AGBankAccountTest >> testTransfer [
+
+	| acc |
+	acc := AGBankAccount withFunds: 100.
+	acc transfer: 50 to: account.
+]
+
+{ #category : 'tests' }
 AGBankAccountTest >> testWithdraw [
 
 	account

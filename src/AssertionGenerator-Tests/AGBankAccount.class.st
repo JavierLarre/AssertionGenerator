@@ -52,6 +52,13 @@ AGBankAccount >> owner: anObject [
 ]
 
 { #category : 'as yet unclassified' }
+AGBankAccount >> transfer: aNumber to: anAccount [
+
+	self withdraw: aNumber.
+	anAccount deposit: aNumber 
+]
+
+{ #category : 'as yet unclassified' }
 AGBankAccount >> withdraw: amount [
 	funds < amount ifTrue: [ self error: 'insufficent funds' ].
 	funds := funds - amount 
