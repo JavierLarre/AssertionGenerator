@@ -168,8 +168,9 @@ AGSnapshotTaker >> takeSnapshotInTest: aTestCase [
 
 	| snapshots |
 	sender := aTestCase.
+	context := thisContext sender.
 	snapshots := isTestMutated
-		ifTrue: [ mutatedSnapshots at: currentMutation ifAbsentPut: [ Dictionary new ] ]
-		ifFalse: [ originalSnapshots ].
+		             ifTrue: [ mutatedSnapshots at: currentMutation ifAbsentPut: [ Dictionary new ] ]
+		             ifFalse: [ originalSnapshots ].
 	snapshots at: aTestCase put: self newSnapshot
 ]
