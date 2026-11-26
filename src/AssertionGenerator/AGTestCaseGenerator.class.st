@@ -35,14 +35,20 @@ AGTestCaseGenerator >> accessorsFor: accessorCollection variable: aSymbol [
 				   accessorCollection first })
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 AGTestCaseGenerator >> assertsCode [
 
-	^ self accessorSequence
-		  collect: [ :accessorCollection |
-				  'self assert: {1} equals: {2}' format: {
-						  (self accessorsFor: accessorCollection allButFirst variable: accessorCollection first).
-						  (self suggestionValue: accessorCollection) storeString } ]
+	self suggestedAssertions children ifEmpty: [ ^ Array new ].
+	^ self suggestedAssertions leafs collect: [ :suggestedAssertionSequence |
+		  self formatAssertWithVariables: suggestedAssertionSequence variables andValue: suggestedAssertionSequence variableValue ]
+]
+
+{ #category : 'formatting' }
+AGTestCaseGenerator >> formatAssertWithVariables: variablesSequence andValue: object [
+
+	^ 'self assert: {1} equals: {2}' format: {
+			  (self accessorsFor: variablesSequence allButFirst variable: variablesSequence first).
+			  object storeString }
 ]
 
 { #category : 'api' }
@@ -92,8 +98,8 @@ AGTestCaseGenerator >> suggestedAssertName [
 AGTestCaseGenerator >> suggestedAssertions [
 
 	^ AGSuggestedAssertions new
-		snapshotDifference: snapshotDifference;
-		differentVariables
+		  snapshotDifference: snapshotDifference;
+		  yourself 
 ]
 
 { #category : 'as yet unclassified' }
