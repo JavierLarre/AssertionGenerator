@@ -14,24 +14,6 @@ Class {
 	#tag : 'Assertions'
 }
 
-{ #category : 'api' }
-AGSuggestedAssertions class >> differentVariablesBetween: anObject and: anotherObject [
-
-	^ self new
-		originalSender: anObject;
-		mutatedSender: anotherObject;
-		differentVariables 
-]
-
-{ #category : 'instance creation' }
-AGSuggestedAssertions class >> originalSender: anObject mutatedSender: anotherObject [ 
-
-	^ self new
-		originalSender: anObject;
-		mutatedSender: anotherObject;
-		yourself
-]
-
 { #category : 'accessing' }
 AGSuggestedAssertions >> childAt: aSelector [
 
