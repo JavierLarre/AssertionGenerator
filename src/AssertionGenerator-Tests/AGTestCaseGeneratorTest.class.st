@@ -58,6 +58,38 @@ AGTestCaseGeneratorTest >> testAssertsCode [
 ]
 
 { #category : 'tests' }
+AGTestCaseGeneratorTest >> testAssertsMultipleDifferences [
+
+	| originalBank |
+	originalBank := AGBankAccount new
+		                owner: 'difference';
+		                deposit: 1;
+		                yourself.
+	generator snapshotDifference
+		originalSnapshot: (AGSnapshot new sender: originalBank);
+		mutatedSnapshot: (AGSnapshot new sender: AGBankAccount new).
+
+	self
+		assertCollection: generator assertsCode
+		hasSameElements: { 'self assert: owner equals: ''difference'''. 'self assert: funds equals: 1' }
+]
+
+{ #category : 'tests' }
+AGTestCaseGeneratorTest >> testAssertsTemporaries [
+
+	generator snapshotDifference
+		originalSnapshot: (AGSnapshot new
+				 sender: AGBankAccount new;
+				 temporaryVariables: (Dictionary newFromKeys: { #temp } andValues: { -1 }));
+		mutatedSnapshot: (AGSnapshot new
+				 sender: AGBankAccount new;
+				 temporaryVariables: (Dictionary newFromKeys: { #temp } andValues: { 1 })).
+
+	self assert: generator assertsCode size equals: 1.
+	self assert: generator assertsCode first equals: 'self assert: temp equals:  -1'
+]
+
+{ #category : 'tests' }
 AGTestCaseGeneratorTest >> testCollectionsAreGenerated [
 
 	| originalBank |
@@ -107,35 +139,11 @@ AGTestCaseGeneratorTest >> testGenerateAsserts [
 ]
 
 { #category : 'tests' }
-AGTestCaseGeneratorTest >> testGenerateMultipleAsserts [
+AGTestCaseGeneratorTest >> testNoAssertsWhenEqual [
 
-	| testCase mutatedTestCase |
-	testCase := (AGBankAccountTest selector: #testWithdrawTooMuch)
-		            account: AGBankAccount new;
-		            yourself.
-	mutatedTestCase := testCase copy.
-	mutatedTestCase account: (AGBankAccount new
-			 owner: nil;
-			 deposit: 1;
-			 yourself).
 	generator snapshotDifference
-		originalSnapshot: (AGSnapshot new sender: testCase);
-		mutatedSnapshot: (AGSnapshot new sender: mutatedTestCase);
-		mutation: (MTMethodMutation
-				 for: AGBankAccount >> #initialize
-				 using: MTAssignmentNullifierOperator new
-				 nodeNumber: 2
-				 ofClass: AGBankAccount
-				 withData: OCAssignmentNode new).
-	generator generateAsserts.
-	self
-		assert: (AGBankAccountTest includesSelector: #testWithdrawTooMuchSuggestedFromMTAssignmentNullifierOperator)
-		description: 'test was not generated or was generated with the wrong name'.
-	self
-		assert: (AGBankAccountTest sourceCodeAt: #testWithdrawTooMuchSuggestedFromMTAssignmentNullifierOperator)
-		equals: 'testWithdrawTooMuchSuggestedFromMTAssignmentNullifierOperator
+		originalSnapshot: (AGSnapshot new sender: AGBankAccount new);
+		mutatedSnapshot: (AGSnapshot new sender: AGBankAccount new).
 
-	self should: [ account withdraw: 1 ] raise: Error.
-	self assert: (account instVarNamed: #funds) equals: 0.
-	self assert: (account instVarNamed: #owner) equals: '''''
+	self assert: generator assertsCode size equals: 0.
 ]

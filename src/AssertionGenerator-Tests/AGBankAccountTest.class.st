@@ -53,7 +53,16 @@ AGBankAccountTest >> testTransfer [
 
 	| acc |
 	acc := AGBankAccount withFunds: 100.
-	acc transfer: 50 to: account.
+	acc transfer: 50 to: account
+]
+
+{ #category : 'tests' }
+AGBankAccountTest >> testTransfer2 [
+
+	| acc1 acc2 |
+	acc1 := AGBankAccount withFunds: 100.
+	acc2 := AGBankAccount new.
+	acc1 transfer: 50 to: acc2
 ]
 
 { #category : 'tests' }

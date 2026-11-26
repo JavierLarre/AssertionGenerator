@@ -37,6 +37,15 @@ AssertionGeneratorTest >> testEvaluateBank [
 ]
 
 { #category : 'tests' }
+AssertionGeneratorTest >> testEvaluateBankTemp [
+
+	| result |
+	result := assertionGenerator findFor: AGBankAccountTempTest mutating: AGBankAccount.
+	self assertEmpty: assertionGenerator generatedTestCases.
+	self assert: result mutationAnalysisBefore mutationScore < result mutationAnalysisAfter mutationScore
+]
+
+{ #category : 'tests' }
 AssertionGeneratorTest >> testGeneratedTestCases [
 
 	| ast |
