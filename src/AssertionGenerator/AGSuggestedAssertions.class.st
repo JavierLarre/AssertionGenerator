@@ -5,13 +5,9 @@ Class {
 	#name : 'AGSuggestedAssertions',
 	#superclass : 'Object',
 	#instVars : [
-		'originalSender',
-		'mutatedSender',
-		'differentVariables',
 		'variable',
-		'suggestedAssertions',
-		'variableValue',
-		'snapshotDifference'
+		'snapshotDifference',
+		'predecesor'
 	],
 	#category : 'AssertionGenerator-Assertions',
 	#package : 'AssertionGenerator',
@@ -36,74 +32,61 @@ AGSuggestedAssertions class >> originalSender: anObject mutatedSender: anotherOb
 		yourself
 ]
 
-{ #category : 'copying' }
-AGSuggestedAssertions >> copyWith: aVariable and: aValue [
+{ #category : 'accessing' }
+AGSuggestedAssertions >> childAt: aSelector [
 
-	^ self copy 
-		variable: aVariable;
-		variableValue: aValue;
-		yourself
+	^ self class new
+		  variable: aSelector;
+		  snapshotDifference: (snapshotDifference differenceOfInstVarAt: aSelector);
+		  predecesor: self
 ]
 
 { #category : 'accessing' }
-AGSuggestedAssertions >> differentVariables [
+AGSuggestedAssertions >> children [
 
-	self searchDifferentVariables.
-	^ differentVariables
+	^ snapshotDifference variablesWithDifferentValues collect: [ :instVarName | self childAt: instVarName ]
 ]
 
 { #category : 'initialization' }
 AGSuggestedAssertions >> initialize [
 
 	super initialize.
-	differentVariables := Dictionary new.
-	variable := 'self'.
-	suggestedAssertions := OrderedCollection new
+	variable := 'self'
 ]
 
 { #category : 'accessing' }
-AGSuggestedAssertions >> mutatedSender [
+AGSuggestedAssertions >> leafs [
 
-	^ mutatedSender
+	self children 
+		ifEmpty: [ ^ OrderedCollection with: self ] 
+		ifNotEmpty: [ ^ self children flatCollect: [ :suggestedAssertion | 
+				suggestedAssertion leafs ] ]
 ]
 
 { #category : 'accessing' }
-AGSuggestedAssertions >> mutatedSender: anObject [
+AGSuggestedAssertions >> predecesor: anObject [
 
-	mutatedSender := anObject
+	predecesor := anObject
 ]
 
-{ #category : 'accessing' }
-AGSuggestedAssertions >> originalSender [
+{ #category : 'enumerating' }
+AGSuggestedAssertions >> predecessors [
 
-	^ originalSender
-]
-
-{ #category : 'accessing' }
-AGSuggestedAssertions >> originalSender: anObject [
-
-	originalSender := anObject
-]
-
-{ #category : 'searching' }
-AGSuggestedAssertions >> searchDifferentVariables [
-
-	| differentNames |
-	snapshotDifference originalSnapshot deserializedSender species ~= snapshotDifference mutatedSnapshot deserializedSender species
-		ifTrue: [ ^ self ].
-	differentNames := snapshotDifference originalSnapshot deserializedSender class allInstVarNames select: [ :instVarName |
-			                  (AGSTON toString: (snapshotDifference originalSnapshot deserializedSender instVarNamed: instVarName))
-				                  ~= (AGSTON toString: (snapshotDifference mutatedSnapshot deserializedSender instVarNamed: instVarName)) ].
-	differentNames do: [ :instVarName |
-			differentVariables at: instVarName put: (self class new
-					 snapshotDifference: (snapshotDifference differenceOfInstVarAt: instVarName);
-					 yourself) differentVariables ]
+	^ predecesor ifNil: [ OrderedCollection with: self ] ifNotNil: [ predecesor predecessors copyWith: self ]
 ]
 
 { #category : 'accessing' }
 AGSuggestedAssertions >> snapshotDifference: anObject [
 
 	snapshotDifference := anObject
+]
+
+{ #category : 'accessing' }
+AGSuggestedAssertions >> suggestedAssertionsAt: accessorCollection [
+
+	accessorCollection ifEmpty: [ ^ self ].
+	^ (self childAt: accessorCollection first)
+		  suggestedAssertionsAt: accessorCollection allButFirst
 ]
 
 { #category : 'accessing' }
@@ -121,11 +104,11 @@ AGSuggestedAssertions >> variable: anObject [
 { #category : 'accessing' }
 AGSuggestedAssertions >> variableValue [
 
-	^ variableValue
+	^ snapshotDifference sender
 ]
 
 { #category : 'accessing' }
-AGSuggestedAssertions >> variableValue: anObject [
+AGSuggestedAssertions >> variables [
 
-	variableValue := anObject
+	^ self predecessors allButFirst collect: [ :pred | pred variable ]
 ]
