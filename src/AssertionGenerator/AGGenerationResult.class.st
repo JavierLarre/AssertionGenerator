@@ -9,12 +9,25 @@ Class {
 		'testClass',
 		'mutationAnalysisBefore',
 		'mutationAnalysisAfter',
-		'suggestedTestMethods'
+		'suggestedTestMethods',
+		'differences'
 	],
 	#category : 'AssertionGenerator-Assertions',
 	#package : 'AssertionGenerator',
 	#tag : 'Assertions'
 }
+
+{ #category : 'accessing' }
+AGGenerationResult >> differences [
+
+	^ differences
+]
+
+{ #category : 'accessing' }
+AGGenerationResult >> differences: anObject [
+
+	differences := anObject
+]
 
 { #category : 'accessing' }
 AGGenerationResult >> mutatedClass [
