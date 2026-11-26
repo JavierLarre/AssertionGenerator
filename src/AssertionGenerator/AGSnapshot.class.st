@@ -34,6 +34,12 @@ AGSnapshot >> deserializedSender [
 	^ AGSTON fromString: serializedSender 
 ]
 
+{ #category : 'accessing' }
+AGSnapshot >> deserializedTemporaryVariables [
+
+	^ AGSTON fromString: temporaryVariables 
+]
+
 { #category : 'comparing' }
 AGSnapshot >> hash [
 

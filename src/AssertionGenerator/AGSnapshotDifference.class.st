@@ -15,19 +15,18 @@ Class {
 }
 
 { #category : 'accessing' }
+AGSnapshotDifference >> deserializedValueAt: aSelector [
+
+	^ originalSnapshot deserializedInstVarAt: aSelector 
+]
+
+{ #category : 'accessing' }
 AGSnapshotDifference >> differenceOfInstVarAt: aSelector [
 
 	^ self copy
 		mutatedSnapshot: (mutatedSnapshot snapshotOfInstVarAt: aSelector);
 		originalSnapshot: (originalSnapshot snapshotOfInstVarAt: aSelector);
 		yourself
-]
-
-{ #category : 'as yet unclassified' }
-AGSnapshotDifference >> differentNames [
-
-	^ self sender class allInstVarNames select: [ :instVarName |
-		(self differenceOfInstVarAt: instVarName ) isDifferent ]
 ]
 
 { #category : 'testing' }
@@ -39,7 +38,7 @@ AGSnapshotDifference >> isDifferent [
 { #category : 'testing' }
 AGSnapshotDifference >> isDifferentSpecies [
 
-	^ originalSnapshot sender species ~= mutatedSnapshot species
+	^ originalSnapshot sender species ~= mutatedSnapshot sender species
 ]
 
 { #category : 'accessing' }
