@@ -16,6 +16,7 @@ Metacello new
 ```smalltalk
 | assertions |
 "A collection of suggested assertions that increase mutation score"
-assertions := AssertionGenerator findFor: AGBankAccountTest mutating: AGBankAccount.
+assertions := AssertionGenerator new
+    findFor: AGBankAccountTest mutating: AGBankAccount.
 assertions inspect
 ```
