@@ -94,3 +94,13 @@ AGSnapshotDifference >> sender [
 
 	^ originalSnapshot sender
 ]
+
+{ #category : 'enumerating' }
+AGSnapshotDifference >> variablesWithDifferentValues [
+
+	| variableNames |
+	self isDifferentSpecies ifTrue: [ ^ Array new ].
+	variableNames := self sender class allInstVarNames, originalSnapshot deserializedTemporaryVariables keys.
+	^ variableNames select: [ :instVarName |
+		                     (self differenceOfInstVarAt: instVarName) isDifferent ]
+]
