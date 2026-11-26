@@ -102,8 +102,9 @@ AssertionGenerator >> newResult [
 		          mutatedClass: classToMutate;
 		          yourself.
 	self collectSnapshots.
+	result differences: snapshotTaker differences.
 	result mutationAnalysisBefore: analysis generalResult.
-	self generateTestCases .
+	self generateTestCases.
 	result suggestedTestMethods: self generatedTestCases.
 	self
 		startNewAnalysis;
