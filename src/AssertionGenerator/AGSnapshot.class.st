@@ -23,7 +23,9 @@ AGSnapshot >> = aSnapshot [
 { #category : 'accessing' }
 AGSnapshot >> deserializedInstVarAt: aSelector [
 
-	^ self deserializedSender instVarNamed: aSelector
+	^ (self includesInstVar: aSelector)
+		ifTrue: [ self deserializedSender instVarNamed: aSelector ]
+		ifFalse: [ self deserializedTemporaryVariables at: aSelector ]
 ]
 
 { #category : 'accessing' }
@@ -35,7 +37,13 @@ AGSnapshot >> deserializedSender [
 { #category : 'comparing' }
 AGSnapshot >> hash [
 
-	^ serializedSender hash
+	^ serializedSender hash bitXor: temporaryVariables hash
+]
+
+{ #category : 'testing' }
+AGSnapshot >> includesInstVar: instVarName [
+
+	^ sender class allInstVarNames includes: instVarName 
 ]
 
 { #category : 'initialization' }
@@ -85,8 +93,8 @@ AGSnapshot >> serializedSender [
 { #category : 'accessing' }
 AGSnapshot >> snapshotOfInstVarAt: aSelector [
 
-	^ self copy
-		  sender: (self deserializedSender instVarNamed: aSelector );
+	^ self class new
+		  sender: (self deserializedInstVarAt: aSelector);
 		  yourself
 ]
 
