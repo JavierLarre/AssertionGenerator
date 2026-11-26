@@ -26,23 +26,6 @@ AGTestCaseGenerator class >> generateTests: differences [
 	differences do: [ :difference | self generateTest: difference ]
 ]
 
-{ #category : 'accessing' }
-AGTestCaseGenerator >> accessorSequence [
-
-	^ self accessorSequenceFor: {  }
-]
-
-{ #category : 'private' }
-AGTestCaseGenerator >> accessorSequenceFor: accessorCollection [
-
-	| dictionary |
-	dictionary := self accessorsFrom: accessorCollection.
-	dictionary isEmpty ifTrue: [ ^ Array with: accessorCollection ].
-	^ OrderedCollection streamContents: [ :stream |
-		  dictionary keysDo: [ :accessor | 
-			stream nextPutAll: (self accessorSequenceFor: accessorCollection , (Array with: accessor)) ] ]
-]
-
 { #category : 'private' }
 AGTestCaseGenerator >> accessorsFor: accessorCollection variable: aSymbol [
 
@@ -50,16 +33,6 @@ AGTestCaseGenerator >> accessorsFor: accessorCollection variable: aSymbol [
 	^ self accessorsFor: accessorCollection allButFirst variable: ('({1} instVarNamed: #{2})' format: {
 				   aSymbol.
 				   accessorCollection first })
-]
-
-{ #category : 'private' }
-AGTestCaseGenerator >> accessorsFrom: accessorCollection [
-
-	| dictionary | 
-	dictionary := self suggestedAssertions.
-	accessorCollection do: [ :accessor | 
-		dictionary := dictionary at: accessor ].
-	^ dictionary
 ]
 
 { #category : 'as yet unclassified' }
